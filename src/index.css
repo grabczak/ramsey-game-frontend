@@ -14,3 +14,25 @@ body,
 #root {
   height: 100%;
 }
+
+.react-flow .react-flow__handle {
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  min-width: 0px;
+  min-height: 0px;
+  width: 0px;
+  height: 0px;
+  border: none;
+  visibility: hidden;
+}
+
+.react-flow .react-flow__edge path {
+  stroke-width: 1;
+}
+
+.react-flow .react-flow__edge:hover path {
+  stroke: black !important;
+}
