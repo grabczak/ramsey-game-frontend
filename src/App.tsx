@@ -8,7 +8,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-// import { play } from "./api";
+import { play } from "./api";
 
 function CircleNode({ data }: { data: { label: string } }) {
   return (
@@ -89,6 +89,16 @@ function App() {
               e.id === edge.id ? { ...e, style: { stroke: "green" } } : e,
             ),
           );
+
+          play(nodes, edges)
+            .then(({ data: edge }) => {
+              setEdges((edges) =>
+                edges.map((e) =>
+                  e.id === edge.id ? { ...e, style: { stroke: "red" } } : e,
+                ),
+              );
+            })
+            .catch((e) => console.log(e));
         }}
         fitView
       >

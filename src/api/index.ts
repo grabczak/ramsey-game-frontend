@@ -9,6 +9,9 @@ const api = axios.create({
   baseURL: process.env.NODE_ENV === "development" ? URL.DEV : URL.PROD,
 });
 
-export const play = () => {
-  return api.get("/");
+export const play = (nodes: any, edges: any) => {
+  return api.post("/play", {
+    headers: { "Content-Type": "application/json" },
+    data: { graph: { nodes, edges } },
+  });
 };
