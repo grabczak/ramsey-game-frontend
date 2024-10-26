@@ -1,6 +1,7 @@
+import { RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 
-import { Graph } from "src/components";
+import { router } from "src/router";
 import { store } from "src/store";
 
 import "src/index.css";
@@ -8,7 +9,7 @@ import "src/index.css";
 export function App() {
   return (
     <Provider store={store}>
-      <Graph />
+      <RouterProvider router={router} />
     </Provider>
   );
 }
