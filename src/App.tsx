@@ -1,78 +1,47 @@
-import { useState, useMemo } from "react";
-import {
-  ReactFlow,
-  Background,
-  Controls,
-  Handle,
-  Position,
-} from "@xyflow/react";
+import { useMemo } from "react";
+import { ReactFlow, Background, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
 import { play } from "./api";
-
-function CircleNode({ data }: { data: { label: string } }) {
-  return (
-    <>
-      <div
-        style={{
-          width: "15px",
-          height: "15px",
-          border: "1px solid rgb(26, 25, 43)",
-          borderRadius: "50%",
-          background: "rgb(255, 255, 255",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 8,
-        }}
-      >
-        <Handle type="source" position={Position.Top} />
-        <div>{data.label}</div>
-        <Handle type="target" position={Position.Top} />
-      </div>
-    </>
-  );
-}
-
-const initialNodes = ((n: number) => {
-  const nodes = [];
-
-  for (let i = 0; i < n; i++) {
-    nodes.push({
-      id: String(i),
-      data: { label: String(i) },
-      position: {
-        x: 100 * Math.cos((-2 * Math.PI * i) / n + Math.PI / 2) + 100,
-        y: -100 * Math.sin((-2 * Math.PI * i) / n + Math.PI / 2) + 100,
-      },
-      type: "circleNode",
-    });
-  }
-
-  return nodes;
-})(6);
-
-const initialEdges = ((n: number) => {
-  const edges = [];
-
-  for (let i = 0; i < n; i++) {
-    for (let j = i + 1; j < n; j++) {
-      edges.push({
-        id: `${i}-${j}`,
-        source: String(i),
-        target: String(j),
-        type: "straight",
-        focusable: false,
-      });
-    }
-  }
-
-  return edges;
-})(initialNodes.length);
+import { useAppSelector, useAppDispatch, setEdgeTeam } from "./store";
+import { CircleNode } from "./components/CircleNode";
+import { TGraph } from "./types";
 
 function App() {
-  const [nodes /*, setNodes */] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
+  const graph = useAppSelector((state) => state.game.graph);
+
+  const dispatch = useAppDispatch();
+
+  const flowNodes = useMemo(() => {
+    const nodes = graph.nodes.map((n, i, a) => ({
+      ...n,
+      data: { label: n.id },
+      position: {
+        x: 100 * Math.cos((-2 * Math.PI * i) / a.length + Math.PI / 2) + 100,
+        y: -100 * Math.sin((-2 * Math.PI * i) / a.length + Math.PI / 2) + 100,
+      },
+      type: "circleNode",
+    }));
+
+    return nodes;
+  }, [graph.nodes]);
+
+  const flowEdges = useMemo(() => {
+    const colors = {
+      browser: "green",
+      server: "red",
+      none: "gray",
+    };
+
+    const edges = graph.edges.map((e) => ({
+      ...e,
+      type: "straight",
+      focusable: false,
+      style: { stroke: colors[e.team] },
+    }));
+
+    return edges;
+  }, [graph.edges]);
 
   const nodeTypes = useMemo(() => ({ circleNode: CircleNode }), []);
 
@@ -80,27 +49,26 @@ function App() {
     <div className="flex flex-col justify-center items-center h-full">
       <ReactFlow
         nodeTypes={nodeTypes}
-        nodes={nodes}
-        edges={edges}
+        nodes={flowNodes}
+        edges={flowEdges}
         nodesDraggable={false}
+        fitView
         onEdgeClick={(_, edge) => {
-          setEdges((edges) =>
-            edges.map((e) =>
-              e.id === edge.id ? { ...e, style: { stroke: "green" } } : e,
-            ),
-          );
+          dispatch(setEdgeTeam({ edgeId: edge.id, team: "browser" }));
 
-          play(nodes, edges)
-            .then(({ data: edge }) => {
-              setEdges((edges) =>
-                edges.map((e) =>
-                  e.id === edge.id ? { ...e, style: { stroke: "red" } } : e,
-                ),
-              );
+          const apiGraph: TGraph = {
+            ...graph,
+            edges: graph.edges.map((e) =>
+              e.id === edge.id ? { ...e, team: "browser" as const } : e,
+            ),
+          };
+
+          play(apiGraph)
+            .then((r) => {
+              dispatch(setEdgeTeam({ edgeId: r.data.id, team: "server" }));
             })
             .catch((e) => console.log(e));
         }}
-        fitView
       >
         <Background />
         <Controls />
