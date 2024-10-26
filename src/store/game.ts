@@ -30,6 +30,7 @@ const createGraph = (n: number): TGraph => {
 
 const initialState: TGameState = {
   graph: createGraph(6),
+  targetCliqueSize: 3,
 };
 
 export const gameSlice = createSlice({
@@ -38,6 +39,12 @@ export const gameSlice = createSlice({
   reducers: {
     setGraphSize: (state, action: PayloadAction<{ graphSize: number }>) => {
       state.graph = createGraph(action.payload.graphSize);
+    },
+    setTargetCliqueSize: (
+      state,
+      action: PayloadAction<{ targetCliqueSize: number }>,
+    ) => {
+      state.targetCliqueSize = action.payload.targetCliqueSize;
     },
     setEdgeTeam: (
       state,
@@ -54,6 +61,7 @@ export const gameSlice = createSlice({
   },
 });
 
-export const { setGraphSize, setEdgeTeam } = gameSlice.actions;
+export const { setGraphSize, setEdgeTeam, setTargetCliqueSize } =
+  gameSlice.actions;
 
 export default gameSlice.reducer;

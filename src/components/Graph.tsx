@@ -10,6 +10,10 @@ import { TGraph } from "src/types";
 export function Graph() {
   const graph = useAppSelector((state) => state.game.graph);
 
+  const targetCliqueSize = useAppSelector(
+    (state) => state.game.targetCliqueSize,
+  );
+
   const dispatch = useAppDispatch();
 
   const flowNodes = useMemo(() => {
@@ -62,7 +66,7 @@ export function Graph() {
           ),
         };
 
-        play(apiGraph)
+        play(apiGraph, targetCliqueSize)
           .then((r) => {
             dispatch(setEdgeTeam({ edgeId: r.data.id, team: "server" }));
           })

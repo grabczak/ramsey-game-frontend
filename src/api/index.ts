@@ -11,9 +11,9 @@ const api = axios.create({
   baseURL: process.env.NODE_ENV === "development" ? URL.DEV : URL.PROD,
 });
 
-export const play = (graph: TGraph) => {
+export const play = (graph: TGraph, targetCliqueSize: number) => {
   return api.post<TEdge>("/play", {
     headers: { "Content-Type": "application/json" },
-    data: { graph },
+    data: { graph, target_clique_size: targetCliqueSize },
   });
 };
