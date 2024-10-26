@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { TGameState, TGraph, TTeam } from "../types";
+import { TGameState, TGraph, TTeam } from "src/types";
 
 const createGraph = (n: number): TGraph => {
   const nodes = [];

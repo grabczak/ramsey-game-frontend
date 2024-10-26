@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { TGraph, TEdge } from "../types";
+import { TGraph, TEdge } from "src/types";
 
 const URL = {
   DEV: "http://127.0.0.1:5000",

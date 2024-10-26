@@ -2,10 +2,10 @@ import { useMemo } from "react";
 import { ReactFlow, Background, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-import { play } from "../api";
-import { CircleNode } from "../components";
-import { useAppSelector, useAppDispatch, setEdgeTeam } from "../store";
-import { TGraph } from "../types";
+import { play } from "src/api";
+import { CircleNode } from "src/components";
+import { useAppSelector, useAppDispatch, setEdgeTeam } from "src/store";
+import { TGraph } from "src/types";
 
 export function Graph() {
   const graph = useAppSelector((state) => state.game.graph);

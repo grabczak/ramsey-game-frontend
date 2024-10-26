@@ -1,5 +1,4 @@
 import { Handle, Position } from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
 
 export function CircleNode({ data }: { data: { label: string } }) {
   return (
