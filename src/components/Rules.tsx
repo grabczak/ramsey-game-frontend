@@ -14,8 +14,13 @@ export function Rules() {
       </p>
       {/* prettier-ignore */}
       <p>
-        Your assigned color is <span className="text-blue-500">blue</span>.
-        The server is your opponent and his color is <span className="text-red-500">red</span>.
+        Your assigned color is <strong><span className="text-blue-500">blue</span></strong>.
+        The server is your opponent and his color is <strong><span className="text-red-500">red</span></strong>.
+      </p>
+      {/* prettier-ignore */}
+      <p>
+        There is a strong mathematical theory related to this problem.
+        You can read more about it <a href="https://www.cs.umd.edu/~gasarch/papers/ramseygames.pdf" target="_blank" className="text-blue-700 underline hover:no-underline">here</a>.
       </p>
       <Link to="/">
         <button className="border-2 border-gray-800 rounded px-3 py-1">
