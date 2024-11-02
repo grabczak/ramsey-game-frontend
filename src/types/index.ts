@@ -18,5 +18,5 @@ export type TGraph = {
 
 export type TGameState = {
   graph: TGraph;
-  targetCliqueSize: number;
+  subcliqueSize: number;
 };

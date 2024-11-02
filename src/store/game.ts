@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import { TGameState, TGraph, TTeam } from "src/types";
+import { clamp, getMinSubcliqueSize, getMaxSubcliqueSize } from "src/utils";
 
 const createGraph = (n: number): TGraph => {
   const nodes = [];
@@ -30,7 +31,7 @@ const createGraph = (n: number): TGraph => {
 
 const initialState: TGameState = {
   graph: createGraph(6),
-  targetCliqueSize: 3,
+  subcliqueSize: 3,
 };
 
 export const gameSlice = createSlice({
@@ -38,13 +39,22 @@ export const gameSlice = createSlice({
   initialState,
   reducers: {
     setGraphSize: (state, action: PayloadAction<{ graphSize: number }>) => {
-      state.graph = createGraph(action.payload.graphSize);
+      const { graphSize } = action.payload;
+      const minSubcliqueSize = getMinSubcliqueSize(graphSize);
+      const maxSubcliqueSize = getMaxSubcliqueSize(graphSize);
+
+      state.graph = createGraph(graphSize);
+      state.subcliqueSize = clamp(
+        state.subcliqueSize,
+        minSubcliqueSize,
+        maxSubcliqueSize,
+      );
     },
-    setTargetCliqueSize: (
+    setSubcliqueSize: (
       state,
-      action: PayloadAction<{ targetCliqueSize: number }>,
+      action: PayloadAction<{ subcliqueSize: number }>,
     ) => {
-      state.targetCliqueSize = action.payload.targetCliqueSize;
+      state.subcliqueSize = action.payload.subcliqueSize;
     },
     setEdgeTeam: (
       state,
@@ -61,7 +71,7 @@ export const gameSlice = createSlice({
   },
 });
 
-export const { setGraphSize, setEdgeTeam, setTargetCliqueSize } =
+export const { setGraphSize, setSubcliqueSize, setEdgeTeam } =
   gameSlice.actions;
 
 export default gameSlice.reducer;

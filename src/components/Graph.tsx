@@ -10,14 +10,12 @@ import { TGraph } from "src/types";
 export function Graph() {
   const graph = useAppSelector((state) => state.game.graph);
 
-  const targetCliqueSize = useAppSelector(
-    (state) => state.game.targetCliqueSize,
-  );
+  const subcliqueSize = useAppSelector((state) => state.game.subcliqueSize);
 
   const dispatch = useAppDispatch();
 
-  const flowNodes = useMemo(() => {
-    const nodes = graph.nodes.map((n, i, a) => ({
+  const nodes = useMemo(() => {
+    return graph.nodes.map((n, i, a) => ({
       ...n,
       data: { label: n.id },
       position: {
@@ -26,25 +24,21 @@ export function Graph() {
       },
       type: "circleNode",
     }));
-
-    return nodes;
   }, [graph.nodes]);
 
-  const flowEdges = useMemo(() => {
+  const edges = useMemo(() => {
     const colors = {
       browser: "green",
       server: "red",
       none: "gray",
     };
 
-    const edges = graph.edges.map((e) => ({
+    return graph.edges.map((e) => ({
       ...e,
       type: "straight",
       focusable: false,
       style: { stroke: colors[e.team] },
     }));
-
-    return edges;
   }, [graph.edges]);
 
   const nodeTypes = useMemo(() => ({ circleNode: CircleNode }), []);
@@ -52,8 +46,8 @@ export function Graph() {
   return (
     <ReactFlow
       nodeTypes={nodeTypes}
-      nodes={flowNodes}
-      edges={flowEdges}
+      nodes={nodes}
+      edges={edges}
       nodesDraggable={false}
       fitView
       onEdgeClick={(_, edge) => {
@@ -66,7 +60,7 @@ export function Graph() {
           ),
         };
 
-        play(apiGraph, targetCliqueSize)
+        play(apiGraph, subcliqueSize)
           .then((r) => {
             dispatch(setEdgeTeam({ edgeId: r.data.id, team: "server" }));
           })
