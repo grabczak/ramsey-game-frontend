@@ -40,7 +40,7 @@ export const gameSlice = createSlice({
   reducers: {
     setGraphSize: (state, action: PayloadAction<{ graphSize: number }>) => {
       const { graphSize } = action.payload;
-      const minSubcliqueSize = getMinSubcliqueSize(graphSize);
+      const minSubcliqueSize = getMinSubcliqueSize();
       const maxSubcliqueSize = getMaxSubcliqueSize(graphSize);
 
       state.graph = createGraph(graphSize);

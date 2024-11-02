@@ -7,6 +7,7 @@ import "@xyflow/react/dist/style.css";
 import { play } from "src/api";
 import { CircleNode } from "src/components";
 import { useAppSelector, useAppDispatch, setEdgeTeam } from "src/store";
+import { createFlowEdges, createFlowNodes } from "src/utils";
 
 export function Graph() {
   const graph = useAppSelector((state) => state.game.graph);
@@ -25,40 +26,12 @@ export function Graph() {
     },
   });
 
-  const nodes = useMemo(() => {
-    return graph.nodes.map((n, i, a) => ({
-      ...n,
-      data: { label: n.id },
-      position: {
-        x: 250 * Math.cos((-2 * Math.PI * i) / a.length + Math.PI / 2) + 250,
-        y: -250 * Math.sin((-2 * Math.PI * i) / a.length + Math.PI / 2) + 250,
-      },
-      type: "circleNode",
-      style: { cursor: "not-allowed" },
-    }));
-  }, [graph.nodes]);
+  const nodes = useMemo(() => createFlowNodes(graph.nodes), [graph.nodes]);
 
-  const edges = useMemo(() => {
-    const colors = {
-      browser: "rgb(59, 130, 246)",
-      server: "rgb(239, 68, 68)",
-      none: "rgb(177, 177, 183, 50%)",
-    };
-
-    return graph.edges.map((e) => ({
-      ...e,
-      type: "straight",
-      focusable: false,
-      style: {
-        stroke: colors[e.team],
-        strokeWidth: 4,
-        pointerEvents:
-          e.team === "none" && !isPending
-            ? ("auto" as const)
-            : ("none" as const),
-      },
-    }));
-  }, [graph.edges, isPending]);
+  const edges = useMemo(
+    () => createFlowEdges(graph.edges, isPending),
+    [graph.edges, isPending],
+  );
 
   const nodeTypes = useMemo(() => ({ circleNode: CircleNode }), []);
 
