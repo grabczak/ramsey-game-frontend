@@ -29,7 +29,7 @@ export function Settings() {
 
   const minGraphSize = 4;
   const maxGraphSize = 9;
-  const minSubcliqueSize = getMinSubcliqueSize(graphSize);
+  const minSubcliqueSize = getMinSubcliqueSize();
   const maxSubcliqueSize = getMaxSubcliqueSize(graphSize);
 
   return (

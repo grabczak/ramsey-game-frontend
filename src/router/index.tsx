@@ -1,11 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { Graph, Rules, Settings } from "src/components";
+import { Graph, NotFound, Rules, Settings } from "src/components";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Settings />,
+    errorElement: <NotFound />,
   },
   {
     path: "/rules",
