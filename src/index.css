@@ -36,3 +36,7 @@ body,
 .react-flow .react-flow__edge:hover path {
   stroke: black !important;
 }
+
+.react-flow__edge-interaction {
+  visibility: hidden;
+}

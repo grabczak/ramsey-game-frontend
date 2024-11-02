@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ReactFlow, Background, Controls } from "@xyflow/react";
+import { ReactFlow, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
 import { play } from "src/api";
@@ -19,25 +19,32 @@ export function Graph() {
       ...n,
       data: { label: n.id },
       position: {
-        x: 100 * Math.cos((-2 * Math.PI * i) / a.length + Math.PI / 2) + 100,
-        y: -100 * Math.sin((-2 * Math.PI * i) / a.length + Math.PI / 2) + 100,
+        x: 250 * Math.cos((-2 * Math.PI * i) / a.length + Math.PI / 2) + 250,
+        y: -250 * Math.sin((-2 * Math.PI * i) / a.length + Math.PI / 2) + 250,
       },
       type: "circleNode",
+      style: {
+        cursor: "not-allowed",
+      },
     }));
   }, [graph.nodes]);
 
   const edges = useMemo(() => {
     const colors = {
-      browser: "green",
-      server: "red",
-      none: "gray",
+      browser: "rgb(34, 197, 94)",
+      server: "rgb(239, 68, 68)",
+      none: "rgb(177, 177, 183, 50%)",
     };
 
     return graph.edges.map((e) => ({
       ...e,
       type: "straight",
       focusable: false,
-      style: { stroke: colors[e.team] },
+      style: {
+        stroke: colors[e.team],
+        strokeWidth: 4,
+        cursor: e.team === "none" ? "pointer" : "not-allowed",
+      },
     }));
   }, [graph.edges]);
 
@@ -49,6 +56,10 @@ export function Graph() {
       nodes={nodes}
       edges={edges}
       nodesDraggable={false}
+      panOnDrag={false}
+      zoomOnDoubleClick={false}
+      zoomOnPinch={false}
+      zoomOnScroll={false}
       fitView
       onEdgeClick={(_, edge) => {
         dispatch(setEdgeTeam({ edgeId: edge.id, team: "browser" }));
@@ -67,8 +78,11 @@ export function Graph() {
           .catch((e) => console.log(e));
       }}
     >
-      <Background />
-      <Controls />
+      <Controls
+        position="top-right"
+        orientation="horizontal"
+        showInteractive={false}
+      />
     </ReactFlow>
   );
 }
