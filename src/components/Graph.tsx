@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { ReactFlow, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
 import { play } from "src/api";
 import { CircleNode } from "src/components";
 import { useAppSelector, useAppDispatch, setEdgeTeam } from "src/store";
-import { TGraph } from "src/types";
 
 export function Graph() {
   const graph = useAppSelector((state) => state.game.graph);
@@ -14,6 +14,16 @@ export function Graph() {
   const subcliqueSize = useAppSelector((state) => state.game.subcliqueSize);
 
   const dispatch = useAppDispatch();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: play,
+    onSuccess: ({ data: edge }) => {
+      dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
+    },
+    onError: (_, { lastEdge }) => {
+      dispatch(setEdgeTeam({ edgeId: lastEdge.id, team: "none" }));
+    },
+  });
 
   const nodes = useMemo(() => {
     return graph.nodes.map((n, i, a) => ({
@@ -24,9 +34,7 @@ export function Graph() {
         y: -250 * Math.sin((-2 * Math.PI * i) / a.length + Math.PI / 2) + 250,
       },
       type: "circleNode",
-      style: {
-        cursor: "not-allowed",
-      },
+      style: { cursor: "not-allowed" },
     }));
   }, [graph.nodes]);
 
@@ -45,10 +53,12 @@ export function Graph() {
         stroke: colors[e.team],
         strokeWidth: 4,
         pointerEvents:
-          e.team === "none" ? ("auto" as const) : ("none" as const),
+          e.team === "none" && !isPending
+            ? ("auto" as const)
+            : ("none" as const),
       },
     }));
-  }, [graph.edges]);
+  }, [graph.edges, isPending]);
 
   const nodeTypes = useMemo(() => ({ circleNode: CircleNode }), []);
 
@@ -65,31 +75,27 @@ export function Graph() {
       fitView
       fitViewOptions={{ padding: 0.5 }}
       onEdgeClick={(_, edge) => {
-        if (edge.team !== "none") {
+        if (isPending || edge.team !== "none") {
           return;
         }
 
         dispatch(setEdgeTeam({ edgeId: edge.id, team: "browser" }));
 
-        const apiGraph: TGraph = {
-          ...graph,
-          edges: graph.edges.map((e) =>
-            e.id === edge.id ? { ...e, team: "browser" as const } : e,
-          ),
-        };
-
-        play(apiGraph, subcliqueSize)
-          .then((r) => {
-            dispatch(setEdgeTeam({ edgeId: r.data.id, team: "server" }));
-          })
-          .catch((e) => console.log(e));
+        mutate({
+          graph: {
+            ...graph,
+            edges: graph.edges.map((e) =>
+              e.id === edge.id ? { ...e, team: "browser" as const } : e,
+            ),
+          },
+          subcliqueSize,
+          lastEdge: edge,
+        });
       }}
+      style={{ cursor: isPending ? "progress" : "inherit" }}
     >
       <Link to="/">
-        <button
-          className="m-[15px] px-3 py-1 font-mono absolute text-xs text-black z-50"
-          style={{ boxShadow: "rgba(0, 0, 0, 0.08) 0px 0px 2px 1px" }}
-        >
+        <button className="m-[15px] px-3 py-1 font-mono absolute text-xs text-black z-50 react-flow__controls">
           &larr; Go back
         </button>
       </Link>
