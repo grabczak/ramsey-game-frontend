@@ -43,7 +43,8 @@ export function Graph() {
       style: {
         stroke: colors[e.team],
         strokeWidth: 4,
-        cursor: e.team === "none" ? "pointer" : "not-allowed",
+        pointerEvents:
+          e.team === "none" ? ("auto" as const) : ("none" as const),
       },
     }));
   }, [graph.edges]);
@@ -62,6 +63,10 @@ export function Graph() {
       zoomOnScroll={false}
       fitView
       onEdgeClick={(_, edge) => {
+        if (edge.team !== "none") {
+          return;
+        }
+
         dispatch(setEdgeTeam({ edgeId: edge.id, team: "browser" }));
 
         const apiGraph: TGraph = {
