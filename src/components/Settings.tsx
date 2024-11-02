@@ -33,7 +33,7 @@ export function Settings() {
   const maxSubcliqueSize = getMaxSubcliqueSize(graphSize);
 
   return (
-    <div className="font-mono flex flex-col justify-center h-full container mx-auto max-w-lg px-4 text-gray-800">
+    <div className="font-mono flex flex-col justify-center min-h-full container mx-auto max-w-lg p-4 text-gray-800">
       <h1 className="text-4xl font-bold text-center mb-6">Ramsey Game</h1>
       <form className="flex flex-col gap-6 items-center">
         <div className="flex flex-col gap-2 w-full">
@@ -73,11 +73,11 @@ export function Settings() {
           </div>
         </div>
         <div className="flex justify-evenly w-full">
-          {/* <Link to="/rules">
+          <Link to="/rules">
             <button className="border-2 border-gray-800 rounded px-3 py-1">
               Rules
             </button>
-          </Link> */}
+          </Link>
           <Link to="/game">
             <button className="border-2 border-gray-800 rounded bg-gray-800 text-white px-3 py-1">
               Play
