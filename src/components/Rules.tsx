@@ -14,12 +14,12 @@ export function Rules() {
       </p>
       {/* prettier-ignore */}
       <p>
-        Your assigned color is <span className="text-green-500">green</span>.
+        Your assigned color is <span className="text-blue-500">blue</span>.
         The server is your opponent and his color is <span className="text-red-500">red</span>.
       </p>
       <Link to="/">
         <button className="border-2 border-gray-800 rounded px-3 py-1">
-          Go back
+          &larr; Go back
         </button>
       </Link>
     </div>

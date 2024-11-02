@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { ReactFlow, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -31,7 +32,7 @@ export function Graph() {
 
   const edges = useMemo(() => {
     const colors = {
-      browser: "rgb(34, 197, 94)",
+      browser: "rgb(59, 130, 246)",
       server: "rgb(239, 68, 68)",
       none: "rgb(177, 177, 183, 50%)",
     };
@@ -62,6 +63,7 @@ export function Graph() {
       zoomOnPinch={false}
       zoomOnScroll={false}
       fitView
+      fitViewOptions={{ padding: 0.5 }}
       onEdgeClick={(_, edge) => {
         if (edge.team !== "none") {
           return;
@@ -83,10 +85,19 @@ export function Graph() {
           .catch((e) => console.log(e));
       }}
     >
+      <Link to="/">
+        <button
+          className="m-[15px] px-3 py-1 font-mono absolute text-xs text-black z-50"
+          style={{ boxShadow: "rgba(0, 0, 0, 0.08) 0px 0px 2px 1px" }}
+        >
+          &larr; Go back
+        </button>
+      </Link>
       <Controls
         position="top-right"
         orientation="horizontal"
         showInteractive={false}
+        fitViewOptions={{ padding: 0.5 }}
       />
     </ReactFlow>
   );
