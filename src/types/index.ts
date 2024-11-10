@@ -21,3 +21,8 @@ export type TGameState = {
   subcliqueSize: number;
   winner: TTeam;
 };
+
+export type TPlayResponse = {
+  edge: TEdge;
+  winner: TTeam;
+};

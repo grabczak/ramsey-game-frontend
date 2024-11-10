@@ -1,4 +1,4 @@
-import { TNode, TEdge } from "src/types";
+import { TNode, TEdge, TGraph } from "src/types";
 
 export const getEdgeCount = (vertexCount: number) => {
   return (vertexCount ** 2 - vertexCount) / 2;
@@ -39,7 +39,7 @@ export const createFlowNodes = (nodes: TNode[]) => {
   }));
 };
 
-export const createFlowEdges = (edges: TEdge[], isPending: boolean) => {
+export const createFlowEdges = (edges: TEdge[], disabled: boolean) => {
   const colors = {
     browser: "rgb(59, 130, 246)",
     server: "rgb(239, 68, 68)",
@@ -54,7 +54,16 @@ export const createFlowEdges = (edges: TEdge[], isPending: boolean) => {
       stroke: colors[e.team],
       strokeWidth: 4,
       pointerEvents:
-        isPending || e.team !== "none" ? ("none" as const) : ("auto" as const),
+        disabled || e.team !== "none" ? ("none" as const) : ("auto" as const),
     },
   }));
+};
+
+export const createApiRequestGraph = (graph: TGraph, edge: TEdge) => {
+  return {
+    ...graph,
+    edges: graph.edges.map((e) =>
+      e.id === edge.id ? { ...e, team: "browser" as const } : e,
+    ),
+  };
 };

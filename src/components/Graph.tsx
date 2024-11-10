@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { ReactFlow } from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
 
 import { play } from "src/api";
 import { CircleNode, Controls } from "src/components";
@@ -11,7 +10,12 @@ import {
   setEdgeTeam,
   setWinner,
 } from "src/store";
-import { createFlowEdges, createFlowNodes } from "src/utils";
+import { TEdge } from "src/types";
+import {
+  createFlowEdges,
+  createFlowNodes,
+  createApiRequestGraph,
+} from "src/utils";
 
 export function Graph() {
   const graph = useAppSelector((state) => state.game.graph);
@@ -24,20 +28,42 @@ export function Graph() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: play,
-    onSuccess: ({ data }) => {
-      dispatch(setEdgeTeam({ edgeId: data.edge.id, team: "server" }));
-      dispatch(setWinner({ winner: data.winner }));
+    onMutate: ({ latestEdge }) => {
+      dispatch(setEdgeTeam({ edgeId: latestEdge.id, team: "browser" }));
     },
-    onError: (_, { lastEdge }) => {
-      dispatch(setEdgeTeam({ edgeId: lastEdge.id, team: "none" }));
+    onSuccess: ({ data }) => {
+      dispatch(setWinner({ winner: data.winner }));
+
+      if (data.winner === "browser") {
+        return;
+      }
+
+      dispatch(setEdgeTeam({ edgeId: data.edge.id, team: "server" }));
+    },
+    onError: (_, { latestEdge }) => {
+      dispatch(setEdgeTeam({ edgeId: latestEdge.id, team: "none" }));
     },
   });
 
+  const disabled = isPending || winner !== "none";
+
   const nodes = useMemo(() => createFlowNodes(graph.nodes), [graph.nodes]);
 
+  const handleEdgeClick = (_: React.MouseEvent, edge: TEdge) => {
+    if (disabled || edge.team !== "none") {
+      return;
+    }
+
+    mutate({
+      graph: createApiRequestGraph(graph, edge),
+      subcliqueSize,
+      latestEdge: edge,
+    });
+  };
+
   const edges = useMemo(
-    () => createFlowEdges(graph.edges, isPending || winner !== "none"),
-    [graph.edges, isPending, winner],
+    () => createFlowEdges(graph.edges, disabled),
+    [graph.edges, disabled],
   );
 
   const nodeTypes = useMemo(() => ({ circleNode: CircleNode }), []);
@@ -54,25 +80,8 @@ export function Graph() {
       zoomOnScroll={false}
       fitView
       fitViewOptions={{ padding: 0.5 }}
-      onEdgeClick={(_, edge) => {
-        if (isPending || edge.team !== "none" || winner !== "none") {
-          return;
-        }
-
-        dispatch(setEdgeTeam({ edgeId: edge.id, team: "browser" }));
-
-        mutate({
-          graph: {
-            ...graph,
-            edges: graph.edges.map((e) =>
-              e.id === edge.id ? { ...e, team: "browser" as const } : e,
-            ),
-          },
-          subcliqueSize,
-          lastEdge: edge,
-        });
-      }}
-      style={{ cursor: isPending ? "progress" : "inherit" }}
+      onEdgeClick={handleEdgeClick}
+      className={isPending ? "cursor-progress" : "cursor-inherit"}
     >
       <Controls />
     </ReactFlow>
