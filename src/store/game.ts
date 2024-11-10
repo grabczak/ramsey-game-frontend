@@ -30,6 +30,7 @@ const initialState: TGameState = {
   graph: createGraph(6),
   subcliqueSize: 3,
   winner: "none",
+  winningSubclique: createGraph(0),
 };
 
 export const gameSlice = createSlice({
@@ -48,6 +49,7 @@ export const gameSlice = createSlice({
         maxSubcliqueSize,
       );
       state.winner = "none";
+      state.winningSubclique = createGraph(0);
     },
     setSubcliqueSize: (
       state,
@@ -56,6 +58,7 @@ export const gameSlice = createSlice({
       state.graph = createGraph(state.graph.nodes.length);
       state.subcliqueSize = action.payload.subcliqueSize;
       state.winner = "none";
+      state.winningSubclique = createGraph(0);
     },
     setEdgeTeam: (
       state,
@@ -72,9 +75,16 @@ export const gameSlice = createSlice({
     setWinner: (state, action: PayloadAction<{ winner: TTeam }>) => {
       state.winner = action.payload.winner;
     },
+    setWinningSubclique: (
+      state,
+      action: PayloadAction<{ winningSubclique: TGraph }>,
+    ) => {
+      state.winningSubclique = action.payload.winningSubclique;
+    },
     restartGame: (state) => {
       state.graph = createGraph(state.graph.nodes.length);
       state.winner = "none";
+      state.winningSubclique = createGraph(0);
     },
   },
 });
@@ -84,6 +94,7 @@ export const {
   setSubcliqueSize,
   setEdgeTeam,
   setWinner,
+  setWinningSubclique,
   restartGame,
 } = gameSlice.actions;
 

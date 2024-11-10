@@ -39,24 +39,41 @@ export const createFlowNodes = (nodes: TNode[]) => {
   }));
 };
 
-export const createFlowEdges = (edges: TEdge[], disabled: boolean) => {
+export const createFlowEdges = (
+  edges: TEdge[],
+  disabled: boolean,
+  winningSubclique: TGraph,
+) => {
   const colors = {
     browser: "rgb(59, 130, 246)",
     server: "rgb(239, 68, 68)",
-    none: "rgb(177, 177, 183, 50%)",
+    none: "rgb(177, 177, 183)",
   };
 
-  return edges.map((e) => ({
-    ...e,
-    type: "straight",
-    focusable: false,
-    style: {
-      stroke: colors[e.team],
-      strokeWidth: 4,
-      pointerEvents:
-        disabled || e.team !== "none" ? ("none" as const) : ("auto" as const),
-    },
-  }));
+  const winningEdgesIds = winningSubclique.edges.map((n) => n.id);
+
+  const gameEnded = winningEdgesIds.length > 0;
+
+  return edges.map((e) => {
+    const edge = {
+      ...e,
+      type: "straight",
+      focusable: false,
+      style: {
+        stroke: colors[e.team],
+        strokeWidth: 4,
+        opacity: e.team === "none" ? "50%" : "100%",
+        pointerEvents:
+          disabled || e.team !== "none" ? ("none" as const) : ("auto" as const),
+      },
+    };
+
+    if (gameEnded && !winningEdgesIds.includes(e.id)) {
+      edge.style.opacity = "25%";
+    }
+
+    return edge;
+  });
 };
 
 export const createApiRequestGraph = (graph: TGraph, edge: TEdge) => {

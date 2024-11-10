@@ -9,8 +9,9 @@ import {
   useAppDispatch,
   setEdgeTeam,
   setWinner,
+  setWinningSubclique,
 } from "src/store";
-import { TEdge } from "src/types";
+import { TNode, TEdge } from "src/types";
 import {
   createFlowEdges,
   createFlowNodes,
@@ -24,6 +25,10 @@ export function Graph() {
 
   const winner = useAppSelector((state) => state.game.winner);
 
+  const winningSubclique = useAppSelector(
+    (state) => state.game.winningSubclique,
+  );
+
   const dispatch = useAppDispatch();
 
   const { mutate, isPending } = useMutation({
@@ -33,6 +38,20 @@ export function Graph() {
     },
     onSuccess: ({ data }) => {
       dispatch(setWinner({ winner: data.winner }));
+
+      if (data.clique !== "none") {
+        const winningEdges = data.clique;
+
+        const winningNodes: TNode[] = [
+          ...new Set(winningEdges.map((e) => e.id.split("-")).flat()),
+        ].map((id) => ({ id }));
+
+        dispatch(
+          setWinningSubclique({
+            winningSubclique: { nodes: winningNodes, edges: winningEdges },
+          }),
+        );
+      }
 
       if (data.winner === "browser") {
         return;
@@ -47,8 +66,6 @@ export function Graph() {
 
   const disabled = isPending || winner !== "none";
 
-  const nodes = useMemo(() => createFlowNodes(graph.nodes), [graph.nodes]);
-
   const handleEdgeClick = (_: React.MouseEvent, edge: TEdge) => {
     if (disabled || edge.team !== "none") {
       return;
@@ -61,9 +78,11 @@ export function Graph() {
     });
   };
 
+  const nodes = useMemo(() => createFlowNodes(graph.nodes), [graph.nodes]);
+
   const edges = useMemo(
-    () => createFlowEdges(graph.edges, disabled),
-    [graph.edges, disabled],
+    () => createFlowEdges(graph.edges, disabled, winningSubclique),
+    [graph.edges, disabled, winningSubclique],
   );
 
   const nodeTypes = useMemo(() => ({ circleNode: CircleNode }), []);

@@ -25,7 +25,7 @@ export const play = async ({
   subcliqueSize: number;
   latestEdge: TEdge;
 }) => {
-  await new Promise((r) => setTimeout(r, 1000));
+  // await new Promise((r) => setTimeout(r, 1000));
 
   return api.post<TPlayResponse>("/play", {
     data: {
