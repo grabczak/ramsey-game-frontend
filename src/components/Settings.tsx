@@ -33,10 +33,10 @@ export function Settings() {
   const maxSubcliqueSize = getMaxSubcliqueSize(graphSize);
 
   return (
-    <div className="font-mono flex flex-col justify-center min-h-full container mx-auto max-w-lg p-4 text-gray-800">
-      <h1 className="text-4xl font-bold text-center mb-6">Ramsey Game</h1>
-      <form className="flex flex-col gap-6 items-center">
-        <div className="flex flex-col gap-2 w-full">
+    <div className="container mx-auto flex min-h-full max-w-lg flex-col justify-center p-4 font-mono text-gray-800">
+      <h1 className="mb-6 text-center text-4xl font-bold">Ramsey Game</h1>
+      <form className="flex flex-col items-center gap-6">
+        <div className="flex w-full flex-col gap-2">
           <label htmlFor="graph-size" className="text-lg">
             Graph size: {graphSize}
           </label>
@@ -47,14 +47,14 @@ export function Settings() {
             onChange={handleGraphSizeChange}
             min={minGraphSize}
             max={maxGraphSize}
-            className="h-2 bg-gray-300 appearance-none cursor-pointer rounded"
+            className="h-2 cursor-pointer appearance-none rounded bg-gray-300"
           />
           <div className="flex justify-between">
             <span className="text-xs">Min: ({minGraphSize})</span>
             <span className="text-xs">Max: ({maxGraphSize})</span>
           </div>
         </div>
-        <div className="flex flex-col gap-2 w-full">
+        <div className="flex w-full flex-col gap-2">
           <label htmlFor="clique-size" className="text-lg">
             Subclique size: {subcliqueSize}
           </label>
@@ -65,21 +65,21 @@ export function Settings() {
             onChange={handleSubcliqueSizeChange}
             min={minSubcliqueSize}
             max={maxSubcliqueSize}
-            className="h-2 bg-gray-300 appearance-none cursor-pointer rounded"
+            className="h-2 cursor-pointer appearance-none rounded bg-gray-300"
           />
           <div className="flex justify-between">
             <span className="text-xs">Min: ({minSubcliqueSize})</span>
             <span className="text-xs">Max: ({maxSubcliqueSize})</span>
           </div>
         </div>
-        <div className="flex justify-evenly w-full">
+        <div className="flex w-full justify-evenly">
           <Link to="/rules">
-            <button className="border-2 border-gray-800 rounded px-3 py-1">
+            <button className="rounded border-2 border-gray-800 px-3 py-1">
               Rules
             </button>
           </Link>
           <Link to="/game">
-            <button className="border-2 border-gray-800 rounded bg-gray-800 text-white px-3 py-1">
+            <button className="rounded border-2 border-gray-800 bg-gray-800 px-3 py-1 text-white">
               Play
             </button>
           </Link>

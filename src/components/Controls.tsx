@@ -10,20 +10,20 @@ type TControlsProps = {
 export function Controls({ winner }: TControlsProps) {
   return (
     <>
-      <div className="absolute z-50 w-full flex justify-between items-center">
-        <div className="flex-1 flex justify-start">
+      <div className="absolute z-50 flex w-full items-center justify-between">
+        <div className="flex flex-1 justify-start">
           <Link to="/">
-            <button className="m-4 px-3 py-1 font-mono text-xs text-black react-flow__controls">
+            <button className="react-flow__controls m-4 px-3 py-1 font-mono text-xs text-black">
               &larr; Go back
             </button>
           </Link>
         </div>
-        <div className="flex-1 flex justify-center">
-          <button className="m-4 px-3 py-2 font-mono text-xs text-black react-flow__controls">
+        <div className="flex flex-1 justify-center">
+          <button className="react-flow__controls m-4 px-3 py-2 font-mono text-xs text-black">
             Restart
           </button>
         </div>
-        <div className="flex-1 flex justify-end">
+        <div className="flex flex-1 justify-end">
           <FlowControls
             orientation="horizontal"
             showInteractive={false}
@@ -33,11 +33,11 @@ export function Controls({ winner }: TControlsProps) {
         </div>
       </div>
       {winner !== "none" && (
-        <div className="absolute z-50 bottom-0 left-0 right-0 w-fit ms-auto me-auto">
-          <div className="m-4 px-3 py-1 font-mono text-black text-xl shadow-md">
+        <div className="absolute bottom-0 left-0 right-0 z-50 me-auto ms-auto w-fit">
+          <div className="m-4 px-3 py-1 font-mono text-xl text-black shadow-md">
             Winner:{" "}
             <span
-              className={`capitalize font-bold ${winner === "browser" ? "text-blue-500" : "text-red-500"}`}
+              className={`font-bold capitalize ${winner === "browser" ? "text-blue-500" : "text-red-500"}`}
             >
               {winner}
             </span>
