@@ -35,7 +35,6 @@ export const createFlowNodes = (nodes: TNode[]) => {
       y: -250 * Math.sin((-2 * Math.PI * i) / a.length + Math.PI / 2) + 250,
     },
     type: "circleNode",
-    style: { cursor: "not-allowed" },
   }));
 };
 
