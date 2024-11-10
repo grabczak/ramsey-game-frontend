@@ -5,22 +5,19 @@ import { TGameState, TGraph, TTeam } from "src/types";
 import { clamp, getMinSubcliqueSize, getMaxSubcliqueSize } from "src/utils";
 
 const createGraph = (n: number): TGraph => {
-  const nodes = [];
-
-  for (let i = 0; i < n; i++) {
-    nodes.push({
-      id: String(i),
-    });
-  }
+  const nodes = Array.from({ length: n }, (_, i) => ({ id: String(i) }));
 
   const edges = [];
 
   for (let i = 0; i < nodes.length; i++) {
     for (let j = i + 1; j < nodes.length; j++) {
+      const sourceIndex = nodes[i].id;
+      const targetIndex = nodes[j].id;
+
       edges.push({
-        id: `${nodes[i].id}-${nodes[j].id}`,
-        source: nodes[i].id,
-        target: nodes[j].id,
+        id: `${sourceIndex}-${targetIndex}`,
+        source: sourceIndex,
+        target: targetIndex,
         team: "none" as const,
       });
     }
@@ -50,12 +47,15 @@ export const gameSlice = createSlice({
         minSubcliqueSize,
         maxSubcliqueSize,
       );
+      state.winner = "none";
     },
     setSubcliqueSize: (
       state,
       action: PayloadAction<{ subcliqueSize: number }>,
     ) => {
+      state.graph = createGraph(state.graph.nodes.length);
       state.subcliqueSize = action.payload.subcliqueSize;
+      state.winner = "none";
     },
     setEdgeTeam: (
       state,
@@ -72,10 +72,19 @@ export const gameSlice = createSlice({
     setWinner: (state, action: PayloadAction<{ winner: TTeam }>) => {
       state.winner = action.payload.winner;
     },
+    restartGame: (state) => {
+      state.graph = createGraph(state.graph.nodes.length);
+      state.winner = "none";
+    },
   },
 });
 
-export const { setGraphSize, setSubcliqueSize, setEdgeTeam, setWinner } =
-  gameSlice.actions;
+export const {
+  setGraphSize,
+  setSubcliqueSize,
+  setEdgeTeam,
+  setWinner,
+  restartGame,
+} = gameSlice.actions;
 
 export default gameSlice.reducer;
