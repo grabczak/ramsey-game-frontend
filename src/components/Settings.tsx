@@ -47,6 +47,7 @@ export function Settings() {
             onChange={handleGraphSizeChange}
             min={minGraphSize}
             max={maxGraphSize}
+            step={1}
             className="h-2 cursor-pointer appearance-none rounded bg-gray-300"
           />
           <div className="flex justify-between">
@@ -65,6 +66,7 @@ export function Settings() {
             onChange={handleSubcliqueSizeChange}
             min={minSubcliqueSize}
             max={maxSubcliqueSize}
+            step={1}
             className="h-2 cursor-pointer appearance-none rounded bg-gray-300"
           />
           <div className="flex justify-between">
