@@ -74,7 +74,7 @@ export function Graph() {
       }}
       style={{ cursor: isPending ? "progress" : "inherit" }}
     >
-      <Controls winner={winner} />
+      <Controls />
     </ReactFlow>
   );
 }

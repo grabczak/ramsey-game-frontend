@@ -37,6 +37,14 @@ body,
   stroke: black !important;
 }
 
-.react-flow__edge-interaction {
+.react-flow .react-flow__edge-interaction {
   visibility: hidden;
+}
+
+.react-flow .react-flow__controls-button {
+  border: none;
+}
+
+.react-flow .react-flow__controls-button:hover {
+  @apply bg-stone-50;
 }
