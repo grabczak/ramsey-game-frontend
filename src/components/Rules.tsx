@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export function Rules() {
   return (
-    <div className="container mx-auto flex min-h-full max-w-lg flex-col items-center justify-center gap-6 p-10 text-justify font-mono">
+    <div className="container mx-auto flex min-h-full max-w-lg flex-col items-center justify-center gap-6 p-10 text-justify">
       <h1 className="text-center text-4xl font-bold">Rules</h1>
       {/* prettier-ignore */}
       <p>

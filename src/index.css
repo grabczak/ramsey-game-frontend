@@ -7,10 +7,14 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
 }
 
-:root,
-body,
+body {
+  height: 100%;
+  @apply font-mono text-gray-800;
+}
+
 #root {
   height: 100%;
 }
@@ -34,7 +38,7 @@ body,
 }
 
 .react-flow .react-flow__edge:hover path {
-  stroke: black !important;
+  stroke: rgb(107, 114, 128) !important;
 }
 
 .react-flow .react-flow__edge-interaction {
@@ -43,6 +47,11 @@ body,
 
 .react-flow .react-flow__controls-button {
   border: none;
+}
+
+.react-flow .react-flow__controls-button svg {
+  border: none;
+  fill: rgb(31, 41, 55);
 }
 
 .react-flow .react-flow__controls-button:hover {

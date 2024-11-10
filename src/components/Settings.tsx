@@ -33,7 +33,7 @@ export function Settings() {
   const maxSubcliqueSize = getMaxSubcliqueSize(graphSize);
 
   return (
-    <div className="container mx-auto flex min-h-full max-w-lg flex-col justify-center p-4 font-mono text-gray-800">
+    <div className="container mx-auto flex min-h-full max-w-lg flex-col justify-center p-4">
       <h1 className="mb-6 text-center text-4xl font-bold">Ramsey Game</h1>
       <form className="flex flex-col items-center gap-6">
         <div className="flex w-full flex-col gap-2">
