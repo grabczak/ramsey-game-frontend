@@ -6,7 +6,12 @@ import "@xyflow/react/dist/style.css";
 
 import { play } from "src/api";
 import { CircleNode } from "src/components";
-import { useAppSelector, useAppDispatch, setEdgeTeam } from "src/store";
+import {
+  useAppSelector,
+  useAppDispatch,
+  setEdgeTeam,
+  setWinner,
+} from "src/store";
 import { createFlowEdges, createFlowNodes } from "src/utils";
 
 export function Graph() {
@@ -14,12 +19,15 @@ export function Graph() {
 
   const subcliqueSize = useAppSelector((state) => state.game.subcliqueSize);
 
+  const winner = useAppSelector((state) => state.game.winner);
+
   const dispatch = useAppDispatch();
 
   const { mutate, isPending } = useMutation({
     mutationFn: play,
-    onSuccess: ({ data: edge }) => {
-      dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
+    onSuccess: ({ data }) => {
+      dispatch(setEdgeTeam({ edgeId: data.edge.id, team: "server" }));
+      dispatch(setWinner({ winner: data.winner }));
     },
     onError: (_, { lastEdge }) => {
       dispatch(setEdgeTeam({ edgeId: lastEdge.id, team: "none" }));
@@ -29,8 +37,8 @@ export function Graph() {
   const nodes = useMemo(() => createFlowNodes(graph.nodes), [graph.nodes]);
 
   const edges = useMemo(
-    () => createFlowEdges(graph.edges, isPending),
-    [graph.edges, isPending],
+    () => createFlowEdges(graph.edges, isPending || winner !== "none"),
+    [graph.edges, isPending, winner],
   );
 
   const nodeTypes = useMemo(() => ({ circleNode: CircleNode }), []);
@@ -48,7 +56,7 @@ export function Graph() {
       fitView
       fitViewOptions={{ padding: 0.5 }}
       onEdgeClick={(_, edge) => {
-        if (isPending || edge.team !== "none") {
+        if (isPending || edge.team !== "none" || winner !== "none") {
           return;
         }
 
@@ -67,17 +75,40 @@ export function Graph() {
       }}
       style={{ cursor: isPending ? "progress" : "inherit" }}
     >
-      <Link to="/">
-        <button className="m-[15px] px-3 py-1 font-mono absolute text-xs text-black z-50 react-flow__controls">
-          &larr; Go back
-        </button>
-      </Link>
-      <Controls
-        position="top-right"
-        orientation="horizontal"
-        showInteractive={false}
-        fitViewOptions={{ padding: 0.5 }}
-      />
+      <div className="absolute z-50 w-full flex justify-between items-center index-50">
+        <div className="flex-1 flex justify-start">
+          <Link to="/">
+            <button className="m-4 px-3 py-1 font-mono text-xs text-black react-flow__controls">
+              &larr; Go back
+            </button>
+          </Link>
+        </div>
+        <div className="flex-1 flex justify-center">
+          <button className="m-4 px-3 py-2 font-mono text-xs text-black react-flow__controls">
+            Restart
+          </button>
+        </div>
+        <div className="flex-1 flex justify-end">
+          <Controls
+            orientation="horizontal"
+            showInteractive={false}
+            fitViewOptions={{ padding: 0.5 }}
+            className="relative m-4"
+          />
+        </div>
+      </div>
+      {winner !== "none" && (
+        <div className="absolute z-50 bottom-0 left-0 right-0 w-fit ms-auto me-auto">
+          <div className="m-4 px-3 py-1 font-mono text-black text-xl shadow-md">
+            Winner:{" "}
+            <span
+              className={`capitalize font-bold ${winner === "browser" ? "text-blue-500" : "text-red-500"}`}
+            >
+              {winner}
+            </span>
+          </div>
+        </div>
+      )}
     </ReactFlow>
   );
 }

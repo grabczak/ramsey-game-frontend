@@ -32,6 +32,7 @@ const createGraph = (n: number): TGraph => {
 const initialState: TGameState = {
   graph: createGraph(6),
   subcliqueSize: 3,
+  winner: "none",
 };
 
 export const gameSlice = createSlice({
@@ -68,10 +69,13 @@ export const gameSlice = createSlice({
         }
       });
     },
+    setWinner: (state, action: PayloadAction<{ winner: TTeam }>) => {
+      state.winner = action.payload.winner;
+    },
   },
 });
 
-export const { setGraphSize, setSubcliqueSize, setEdgeTeam } =
+export const { setGraphSize, setSubcliqueSize, setEdgeTeam, setWinner } =
   gameSlice.actions;
 
 export default gameSlice.reducer;

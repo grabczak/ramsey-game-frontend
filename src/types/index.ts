@@ -19,4 +19,5 @@ export type TGraph = {
 export type TGameState = {
   graph: TGraph;
   subcliqueSize: number;
+  winner: TTeam;
 };

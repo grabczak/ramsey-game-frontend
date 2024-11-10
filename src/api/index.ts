@@ -1,7 +1,7 @@
 import axios from "axios";
 import { QueryClient } from "@tanstack/react-query";
 
-import { TGraph, TEdge } from "src/types";
+import { TGraph, TEdge, TTeam } from "src/types";
 
 const URL = {
   DEV: "http://127.0.0.1:5000",
@@ -10,9 +10,15 @@ const URL = {
 
 const api = axios.create({
   baseURL: process.env.NODE_ENV === "development" ? URL.DEV : URL.PROD,
+  headers: { "Content-Type": "application/json" },
 });
 
-export const play = ({
+type TPlayResponse = {
+  edge: TEdge;
+  winner: TTeam;
+};
+
+export const play = async ({
   graph,
   subcliqueSize,
   // @ts-expect-error For react-query error handling
@@ -23,12 +29,14 @@ export const play = ({
   subcliqueSize: number;
   lastEdge: TEdge;
 }) => {
-  return new Promise((r) => setTimeout(r, 1000)).then(() =>
-    api.post<TEdge>("/play", {
-      headers: { "Content-Type": "application/json" },
-      data: { graph, target_clique_size: subcliqueSize },
-    }),
-  );
+  await new Promise((r) => setTimeout(r, 1000));
+
+  return api.post<TPlayResponse>("/play", {
+    data: {
+      graph,
+      target_clique_size: subcliqueSize,
+    },
+  });
 };
 
 export const queryClient = new QueryClient();
