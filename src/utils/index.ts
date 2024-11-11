@@ -1,4 +1,4 @@
-import { TNode, TEdge, TGraph } from "src/types";
+import { TNode, TEdge, TGraph, TWinner } from "src/types";
 
 export const getEdgeCount = (vertexCount: number) => {
   return (vertexCount ** 2 - vertexCount) / 2;
@@ -43,6 +43,7 @@ export const createFlowEdges = (
   edges: TEdge[],
   disabled: boolean,
   winningEdges: TEdge[],
+  winner: TWinner,
 ) => {
   const colors = {
     browser: "rgb(59, 130, 246)",
@@ -50,30 +51,41 @@ export const createFlowEdges = (
     none: "rgb(177, 177, 183)",
   };
 
-  const winningEdgesIds = winningEdges.map((n) => n.id);
+  const auto = "auto";
+  const none = "none";
 
-  const gameEnded = winningEdgesIds.length > 0;
+  const _edges = edges.map((e) => ({
+    ...e,
+    type: "straight",
+    focusable: false,
+    style: {
+      stroke: colors[e.team],
+      strokeWidth: 4,
+      opacity: e.team === "none" ? "50%" : "100%",
+      pointerEvents: disabled || e.team !== "none" ? none : auto,
+    },
+  }));
 
-  return edges.map((e) => {
-    const edge = {
+  if (winner === "browser" || winner === "server") {
+    const winningEdgeIds = winningEdges.map((e) => e.id);
+
+    return _edges.map((e) => ({
       ...e,
-      type: "straight",
-      focusable: false,
       style: {
-        stroke: colors[e.team],
-        strokeWidth: 4,
-        opacity: e.team === "none" ? "50%" : "100%",
-        pointerEvents:
-          disabled || e.team !== "none" ? ("none" as const) : ("auto" as const),
+        ...e.style,
+        opacity: winningEdgeIds.includes(e.id) ? "100%" : "35%",
       },
-    };
+    }));
+  }
 
-    if (gameEnded && !winningEdgesIds.includes(e.id)) {
-      edge.style.opacity = "25%";
-    }
+  if (winner === "draw") {
+    return _edges.map((e) => ({
+      ...e,
+      style: { ...e.style, opacity: "35%" },
+    }));
+  }
 
-    return edge;
-  });
+  return _edges;
 };
 
 export const createApiRequestGraph = (graph: TGraph, edge: TEdge) => {

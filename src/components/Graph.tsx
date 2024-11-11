@@ -83,8 +83,8 @@ export function Graph() {
   const nodes = useMemo(() => createFlowNodes(graph.nodes), [graph.nodes]);
 
   const edges = useMemo(
-    () => createFlowEdges(graph.edges, disabled, winningEdges),
-    [graph.edges, disabled, winningEdges],
+    () => createFlowEdges(graph.edges, disabled, winningEdges, winner),
+    [graph.edges, disabled, winningEdges, winner],
   );
 
   const nodeTypes = useMemo(() => ({ circleNode: CircleNode }), []);
