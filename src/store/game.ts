@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { TGameState, TGraph, TTeam } from "src/types";
+import { TGameState, TGraph, TTeam, TEdge } from "src/types";
 import { clamp, getMinSubcliqueSize, getMaxSubcliqueSize } from "src/utils";
 
 const createGraph = (n: number): TGraph => {
@@ -30,7 +30,7 @@ const initialState: TGameState = {
   graph: createGraph(6),
   subcliqueSize: 3,
   winner: "none",
-  winningSubclique: createGraph(0),
+  winningEdges: [],
 };
 
 export const gameSlice = createSlice({
@@ -49,7 +49,7 @@ export const gameSlice = createSlice({
         maxSubcliqueSize,
       );
       state.winner = "none";
-      state.winningSubclique = createGraph(0);
+      state.winningEdges = [];
     },
     setSubcliqueSize: (
       state,
@@ -58,7 +58,7 @@ export const gameSlice = createSlice({
       state.graph = createGraph(state.graph.nodes.length);
       state.subcliqueSize = action.payload.subcliqueSize;
       state.winner = "none";
-      state.winningSubclique = createGraph(0);
+      state.winningEdges = [];
     },
     setEdgeTeam: (
       state,
@@ -75,16 +75,16 @@ export const gameSlice = createSlice({
     setWinner: (state, action: PayloadAction<{ winner: TTeam }>) => {
       state.winner = action.payload.winner;
     },
-    setWinningSubclique: (
+    setWinningEdges: (
       state,
-      action: PayloadAction<{ winningSubclique: TGraph }>,
+      action: PayloadAction<{ winningEdges: TEdge[] }>,
     ) => {
-      state.winningSubclique = action.payload.winningSubclique;
+      state.winningEdges = action.payload.winningEdges;
     },
     restartGame: (state) => {
       state.graph = createGraph(state.graph.nodes.length);
       state.winner = "none";
-      state.winningSubclique = createGraph(0);
+      state.winningEdges = [];
     },
   },
 });
@@ -94,7 +94,7 @@ export const {
   setSubcliqueSize,
   setEdgeTeam,
   setWinner,
-  setWinningSubclique,
+  setWinningEdges,
   restartGame,
 } = gameSlice.actions;
 

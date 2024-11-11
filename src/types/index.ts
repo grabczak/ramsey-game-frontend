@@ -20,7 +20,7 @@ export type TGameState = {
   graph: TGraph;
   subcliqueSize: number;
   winner: TTeam;
-  winningSubclique: TGraph;
+  winningEdges: TEdge[];
 };
 
 export type TPlayResponse = {

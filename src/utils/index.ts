@@ -41,7 +41,7 @@ export const createFlowNodes = (nodes: TNode[]) => {
 export const createFlowEdges = (
   edges: TEdge[],
   disabled: boolean,
-  winningSubclique: TGraph,
+  winningEdges: TEdge[],
 ) => {
   const colors = {
     browser: "rgb(59, 130, 246)",
@@ -49,7 +49,7 @@ export const createFlowEdges = (
     none: "rgb(177, 177, 183)",
   };
 
-  const winningEdgesIds = winningSubclique.edges.map((n) => n.id);
+  const winningEdgesIds = winningEdges.map((n) => n.id);
 
   const gameEnded = winningEdgesIds.length > 0;
 
