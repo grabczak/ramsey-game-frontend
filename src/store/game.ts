@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { TGameState, TGraph, TTeam, TEdge } from "src/types";
+import { TGameState, TGraph, TTeam, TEdge, TWinner } from "src/types";
 import { clamp, getMinSubcliqueSize, getMaxSubcliqueSize } from "src/utils";
 
 const createGraph = (n: number): TGraph => {
@@ -72,7 +72,7 @@ export const gameSlice = createSlice({
         }
       });
     },
-    setWinner: (state, action: PayloadAction<{ winner: TTeam }>) => {
+    setWinner: (state, action: PayloadAction<{ winner: TWinner }>) => {
       state.winner = action.payload.winner;
     },
     setWinningEdges: (

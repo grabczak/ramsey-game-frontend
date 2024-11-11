@@ -4,6 +4,8 @@ export type TNode = {
 
 export type TTeam = "browser" | "server" | "none";
 
+export type TWinner = TTeam | "draw";
+
 export type TEdge = {
   id: string;
   source: string;
@@ -19,12 +21,28 @@ export type TGraph = {
 export type TGameState = {
   graph: TGraph;
   subcliqueSize: number;
-  winner: TTeam;
+  winner: TWinner;
   winningEdges: TEdge[];
 };
 
-export type TPlayResponse = {
-  edge: TEdge;
-  winner: TTeam;
-  clique: "none" | TEdge[];
-};
+export type TPlayResponse =
+  | {
+      winner: "none";
+      edge: TEdge;
+      clique: [];
+    }
+  | {
+      winner: "browser";
+      edge: null;
+      clique: TEdge[];
+    }
+  | {
+      winner: "server";
+      edge: TEdge;
+      clique: TEdge[];
+    }
+  | {
+      winner: "draw";
+      edge: TEdge | null;
+      clique: [];
+    };

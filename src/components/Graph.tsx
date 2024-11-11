@@ -35,19 +35,31 @@ export function Graph() {
       dispatch(setEdgeTeam({ edgeId: latestEdge.id, team: "browser" }));
     },
     onSuccess: ({ data }) => {
-      dispatch(setWinner({ winner: data.winner }));
+      const { winner, edge, clique } = data;
 
-      if (data.clique !== "none") {
-        const winningEdges = data.clique;
-
-        dispatch(setWinningEdges({ winningEdges }));
+      switch (winner) {
+        case "none":
+          dispatch(setWinner({ winner }));
+          dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
+          break;
+        case "browser":
+          dispatch(setWinner({ winner }));
+          dispatch(setWinningEdges({ winningEdges: clique }));
+          break;
+        case "server":
+          dispatch(setWinner({ winner }));
+          dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
+          dispatch(setWinningEdges({ winningEdges: clique }));
+          break;
+        case "draw":
+          dispatch(setWinner({ winner }));
+          if (edge) {
+            dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
+          }
+          break;
+        default:
+          return;
       }
-
-      if (data.winner === "browser") {
-        return;
-      }
-
-      dispatch(setEdgeTeam({ edgeId: data.edge.id, team: "server" }));
     },
     onError: (_, { latestEdge }) => {
       dispatch(setEdgeTeam({ edgeId: latestEdge.id, team: "none" }));
