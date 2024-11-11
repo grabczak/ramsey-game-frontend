@@ -52,9 +52,6 @@ export const createFlowEdges = ({
     none: "rgb(177, 177, 183)",
   };
 
-  const auto = "auto";
-  const none = "none";
-
   const _edges = edges.map((e) => ({
     ...e,
     type: "straight",
@@ -63,7 +60,7 @@ export const createFlowEdges = ({
       stroke: colors[e.team],
       strokeWidth: 4,
       opacity: e.team === "none" ? "50%" : "100%",
-      pointerEvents: disabled || e.team !== "none" ? none : auto,
+      pointerEvents: disabled || e.team !== "none" ? "none" : "auto",
     },
   }));
 
