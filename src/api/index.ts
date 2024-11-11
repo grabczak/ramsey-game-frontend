@@ -14,22 +14,25 @@ const api = axios.create({
   baseURL: process.env.NODE_ENV === "development" ? URL.DEV : URL.PROD,
 });
 
-export const play = async ({
+export const play = ({
   graph,
   subcliqueSize,
-  // @ts-expect-error Error handling with react-query
-  // eslint-disable-next-line
   latestEdge,
 }: {
   graph: TGraph;
   subcliqueSize: number;
   latestEdge: TEdge;
 }) => {
-  // await new Promise((r) => setTimeout(r, 1000));
+  const _graph = {
+    ...graph,
+    edges: graph.edges.map((e) =>
+      e.id === latestEdge.id ? { ...e, team: "browser" as const } : e,
+    ),
+  };
 
   return api.post<TPlayResponse>("/play", {
     data: {
-      graph,
+      graph: _graph,
       target_clique_size: subcliqueSize,
     },
   });

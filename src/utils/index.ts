@@ -1,4 +1,4 @@
-import { TNode, TEdge, TGraph, TWinner } from "src/types";
+import { TNode, TEdge, TWinner } from "src/types";
 
 export const getEdgeCount = (vertexCount: number) => {
   return (vertexCount ** 2 - vertexCount) / 2;
@@ -86,13 +86,4 @@ export const createFlowEdges = (
   }
 
   return _edges;
-};
-
-export const createApiRequestGraph = (graph: TGraph, edge: TEdge) => {
-  return {
-    ...graph,
-    edges: graph.edges.map((e) =>
-      e.id === edge.id ? { ...e, team: "browser" as const } : e,
-    ),
-  };
 };

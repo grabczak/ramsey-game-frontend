@@ -12,11 +12,7 @@ import {
   setWinningEdges,
 } from "src/store";
 import { TEdge } from "src/types";
-import {
-  createFlowEdges,
-  createFlowNodes,
-  createApiRequestGraph,
-} from "src/utils";
+import { createFlowEdges, createFlowNodes } from "src/utils";
 
 export function Graph() {
   const graph = useAppSelector((state) => state.game.graph);
@@ -37,22 +33,20 @@ export function Graph() {
     onSuccess: ({ data }) => {
       const { winner, edge, clique } = data;
 
+      dispatch(setWinner({ winner }));
+
       switch (winner) {
         case "none":
-          dispatch(setWinner({ winner }));
           dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
           break;
         case "browser":
-          dispatch(setWinner({ winner }));
           dispatch(setWinningEdges({ winningEdges: clique }));
           break;
         case "server":
-          dispatch(setWinner({ winner }));
           dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
           dispatch(setWinningEdges({ winningEdges: clique }));
           break;
         case "draw":
-          dispatch(setWinner({ winner }));
           if (edge) {
             dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
           }
@@ -74,7 +68,7 @@ export function Graph() {
     }
 
     mutate({
-      graph: createApiRequestGraph(graph, edge),
+      graph,
       subcliqueSize,
       latestEdge: edge,
     });
