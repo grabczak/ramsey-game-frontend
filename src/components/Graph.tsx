@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { shallowEqual } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import { ReactFlow } from "@xyflow/react";
 
@@ -15,13 +16,10 @@ import { TEdge } from "src/types";
 import { createFlowEdges, createFlowNodes } from "src/utils";
 
 export function Graph() {
-  const graph = useAppSelector((state) => state.game.graph);
-
-  const subcliqueSize = useAppSelector((state) => state.game.subcliqueSize);
-
-  const winner = useAppSelector((state) => state.game.winner);
-
-  const winningEdges = useAppSelector((state) => state.game.winningEdges);
+  const { graph, subcliqueSize, winner, winningEdges } = useAppSelector(
+    (state) => state.game,
+    shallowEqual,
+  );
 
   const dispatch = useAppDispatch();
 
@@ -35,24 +33,12 @@ export function Graph() {
 
       dispatch(setWinner({ winner }));
 
-      switch (winner) {
-        case "none":
-          dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
-          break;
-        case "browser":
-          dispatch(setWinningEdges({ winningEdges: clique }));
-          break;
-        case "server":
-          dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
-          dispatch(setWinningEdges({ winningEdges: clique }));
-          break;
-        case "draw":
-          if (edge) {
-            dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
-          }
-          break;
-        default:
-          return;
+      if (edge) {
+        dispatch(setEdgeTeam({ edgeId: edge.id, team: "server" }));
+      }
+
+      if (winner === "browser" || winner === "server") {
+        dispatch(setWinningEdges({ winningEdges: clique }));
       }
     },
     onError: (_, { latestEdge }) => {
@@ -74,10 +60,14 @@ export function Graph() {
     });
   };
 
-  const nodes = useMemo(() => createFlowNodes(graph.nodes), [graph.nodes]);
+  const nodes = useMemo(
+    () => createFlowNodes({ nodes: graph.nodes }),
+    [graph.nodes],
+  );
 
   const edges = useMemo(
-    () => createFlowEdges(graph.edges, disabled, winningEdges, winner),
+    () =>
+      createFlowEdges({ edges: graph.edges, winner, winningEdges, disabled }),
     [graph.edges, disabled, winningEdges, winner],
   );
 

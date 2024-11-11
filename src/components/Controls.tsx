@@ -2,8 +2,7 @@ import { Link } from "react-router-dom";
 import { Controls as FlowControls } from "@xyflow/react";
 import cx from "classnames";
 
-import { useAppSelector, useAppDispatch } from "src/store";
-import { restartGame } from "src/store";
+import { useAppSelector, useAppDispatch, restartGame } from "src/store";
 
 export function Controls() {
   const winner = useAppSelector((state) => state.game.winner);

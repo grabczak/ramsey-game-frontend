@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import { TGameState, TGraph, TTeam, TEdge, TWinner } from "src/types";
-import { clamp, getMinSubcliqueSize, getMaxSubcliqueSize } from "src/utils";
+import { clamp, getMaxSubcliqueSize } from "src/utils";
 
 const createGraph = (n: number): TGraph => {
   const nodes = Array.from({ length: n }, (_, i) => ({ id: String(i) }));
@@ -39,7 +39,7 @@ export const gameSlice = createSlice({
   reducers: {
     setGraphSize: (state, action: PayloadAction<{ graphSize: number }>) => {
       const { graphSize } = action.payload;
-      const minSubcliqueSize = getMinSubcliqueSize();
+      const minSubcliqueSize = 3;
       const maxSubcliqueSize = getMaxSubcliqueSize(graphSize);
 
       state.graph = createGraph(graphSize);

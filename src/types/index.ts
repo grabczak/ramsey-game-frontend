@@ -1,10 +1,10 @@
-export type TNode = {
-  id: string;
-};
-
 export type TTeam = "browser" | "server" | "none";
 
 export type TWinner = TTeam | "draw";
+
+export type TNode = {
+  id: string;
+};
 
 export type TEdge = {
   id: string;

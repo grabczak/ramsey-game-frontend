@@ -9,11 +9,11 @@ export const store = configureStore({
   },
 });
 
-export type TRootState = ReturnType<typeof store.getState>;
+type TRootState = ReturnType<typeof store.getState>;
 
 export const useAppSelector = useSelector.withTypes<TRootState>();
 
-export type TAppDispatch = typeof store.dispatch;
+type TAppDispatch = typeof store.dispatch;
 
 export const useAppDispatch = useDispatch.withTypes<TAppDispatch>();
 

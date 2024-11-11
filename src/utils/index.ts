@@ -1,15 +1,11 @@
 import { TNode, TEdge, TWinner } from "src/types";
 
-export const getEdgeCount = (vertexCount: number) => {
-  return (vertexCount ** 2 - vertexCount) / 2;
-};
-
 export const clamp = (n: number, min: number, max: number) => {
   return Math.min(Math.max(n, min), max);
 };
 
-export const getMinSubcliqueSize = () => {
-  return 3;
+export const getEdgeCount = (vertexCount: number) => {
+  return (vertexCount ** 2 - vertexCount) / 2;
 };
 
 export const getMaxSubcliqueSize = (graphSize: number) => {
@@ -26,7 +22,7 @@ export const getMaxSubcliqueSize = (graphSize: number) => {
   return 3;
 };
 
-export const createFlowNodes = (nodes: TNode[]) => {
+export const createFlowNodes = ({ nodes }: { nodes: TNode[] }) => {
   return nodes.map((n, i, a) => ({
     ...n,
     data: { label: n.id },
@@ -39,12 +35,17 @@ export const createFlowNodes = (nodes: TNode[]) => {
   }));
 };
 
-export const createFlowEdges = (
-  edges: TEdge[],
-  disabled: boolean,
-  winningEdges: TEdge[],
-  winner: TWinner,
-) => {
+export const createFlowEdges = ({
+  edges,
+  winner,
+  winningEdges,
+  disabled,
+}: {
+  edges: TEdge[];
+  winner: TWinner;
+  winningEdges: TEdge[];
+  disabled: boolean;
+}) => {
   const colors = {
     browser: "rgb(59, 130, 246)",
     server: "rgb(239, 68, 68)",

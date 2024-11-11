@@ -6,7 +6,7 @@ import {
   setGraphSize,
   setSubcliqueSize,
 } from "src/store";
-import { getMinSubcliqueSize, getMaxSubcliqueSize } from "src/utils";
+import { getMaxSubcliqueSize } from "src/utils";
 
 export function Settings() {
   const graphSize = useAppSelector((state) => state.game.graph.nodes.length);
@@ -29,7 +29,7 @@ export function Settings() {
 
   const minGraphSize = 4;
   const maxGraphSize = 9;
-  const minSubcliqueSize = getMinSubcliqueSize();
+  const minSubcliqueSize = 3;
   const maxSubcliqueSize = getMaxSubcliqueSize(graphSize);
 
   return (
