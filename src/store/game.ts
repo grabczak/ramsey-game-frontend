@@ -1,5 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import { TGameState, TGraph, TTeam, TEdge, TWinner } from "src/types";
 import { clamp, getMaxSubcliqueSize } from "src/utils";
@@ -7,21 +6,14 @@ import { clamp, getMaxSubcliqueSize } from "src/utils";
 const createGraph = (n: number): TGraph => {
   const nodes = Array.from({ length: n }, (_, i) => ({ id: String(i) }));
 
-  const edges = [];
-
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      const sourceIndex = nodes[i].id;
-      const targetIndex = nodes[j].id;
-
-      edges.push({
-        id: `${sourceIndex}-${targetIndex}`,
-        source: sourceIndex,
-        target: targetIndex,
-        team: "none" as const,
-      });
-    }
-  }
+  const edges = nodes.flatMap((_, i, a) =>
+    Array.from({ length: a.length - i - 1 }).map((_, j) => ({
+      id: `${i}-${i + j + 1}`,
+      source: `${i}`,
+      target: `${i + j + 1}`,
+      team: "none" as const,
+    })),
+  );
 
   return { nodes, edges };
 };
