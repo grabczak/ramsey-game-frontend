@@ -13,6 +13,10 @@ export function Settings() {
 
   const subcliqueSize = useAppSelector((state) => state.game.subcliqueSize);
 
+  const resume = useAppSelector((state) =>
+    state.game.graph.edges.some((e) => e.team !== "none"),
+  );
+
   const dispatch = useAppDispatch();
 
   const handleGraphSizeChange: React.ChangeEventHandler<HTMLInputElement> = (
@@ -82,7 +86,7 @@ export function Settings() {
           </Link>
           <Link to="/game">
             <button className="rounded border-2 border-gray-800 bg-gray-800 px-3 py-1 text-white">
-              Play
+              {resume ? "Resume" : "Play"}
             </button>
           </Link>
         </div>
