@@ -1,4 +1,4 @@
-import { TNode, TEdge, TWinner } from "src/types";
+import { TNode, TEdge, TWinner, TGraph } from "src/types";
 
 export const clamp = (n: number, min: number, max: number) => {
   return Math.min(Math.max(n, min), max);
@@ -20,6 +20,21 @@ export const getMaxSubcliqueSize = (graphSize: number) => {
   }
 
   return 3;
+};
+
+export const createGraph = (n: number): TGraph => {
+  const nodes = Array.from({ length: n }, (_, i) => ({ id: String(i) }));
+
+  const edges = nodes.flatMap((_, i, a) =>
+    Array.from({ length: a.length - i - 1 }).map((_, j) => ({
+      id: `${i}-${i + j + 1}`,
+      source: `${i}`,
+      target: `${i + j + 1}`,
+      team: "none" as const,
+    })),
+  );
+
+  return { nodes, edges };
 };
 
 export const createFlowNodes = ({ nodes }: { nodes: TNode[] }) => {
