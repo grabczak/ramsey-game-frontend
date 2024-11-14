@@ -5,25 +5,31 @@ export const clamp = (n: number, min: number, max: number) => {
 };
 
 export const getEdgeCount = (vertexCount: number) => {
-  return (vertexCount ** 2 - vertexCount) / 2;
+  if (vertexCount < 0) {
+    return 0;
+  }
+
+  const _vertexCount = Math.floor(vertexCount);
+
+  return (_vertexCount ** 2 - _vertexCount) / 2;
+};
+
+export const getVertexCount = (edgeCount: number) => {
+  if (edgeCount < 0) {
+    return 0;
+  }
+
+  const _edgeCount = Math.floor(edgeCount);
+
+  return Math.floor((1 + Math.sqrt(1 + 8 * _edgeCount)) / 2);
 };
 
 export const getMaxSubcliqueSize = (graphSize: number) => {
-  const edgeCount = getEdgeCount(graphSize);
-
-  for (let i = 4; i < 10; i++) {
-    const iEdgeCount = getEdgeCount(i);
-
-    if (iEdgeCount > edgeCount / 2) {
-      return i - 1;
-    }
-  }
-
-  return 3;
+  return getVertexCount(getEdgeCount(graphSize) / 2);
 };
 
 export const createGraph = (n: number): TGraph => {
-  const nodes = Array.from({ length: n }, (_, i) => ({ id: String(i) }));
+  const nodes = Array.from({ length: n }).map((_, i) => ({ id: String(i) }));
 
   const edges = nodes.flatMap((_, i, a) =>
     Array.from({ length: a.length - i - 1 }).map((_, j) => ({
